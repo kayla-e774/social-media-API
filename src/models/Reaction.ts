@@ -1,5 +1,5 @@
 import { Schema, Document, ObjectId, Types } from 'mongoose';
-import formatDate from '../utils/formatDate';
+import formatDate from '../utils/formatDate.js';
 
 interface IReaction extends Document {
     reactionId: ObjectId;
