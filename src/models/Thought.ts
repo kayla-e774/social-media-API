@@ -1,12 +1,12 @@
 import { Schema, model } from 'mongoose';
-import Reaction from "./Reaction.js"
+import Reaction, { IReaction } from "./Reaction.js"
 import formatDate from '../utils/formatDate.js';
 
 interface IThought {
     thoughtText: string;
-    createdAt: Date;
+    createdAt: Date | string;
     username: string;
-    reactions: typeof Reaction[];
+    reactions: IReaction[];
 }
 
 const thoughtSchema = new Schema<IThought>(
@@ -20,7 +20,7 @@ const thoughtSchema = new Schema<IThought>(
         createdAt: {
             type: Date,
             default: Date.now,
-            get: formatDate,
+            get:  (val: any) => formatDate(val),
         },
         username: {
             type: String,
@@ -31,6 +31,7 @@ const thoughtSchema = new Schema<IThought>(
     {
         toJSON: {
             virtuals: true,
+            getters: true
         },
         id: false
     }

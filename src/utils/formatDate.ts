@@ -1,11 +1,5 @@
 export default function formatDate(createdAt: Date) {
-    const formattedDateTime = new Date(
-        createdAt.getFullYear(),
-        createdAt.getMonth(),
-        createdAt.getDay(),
-        createdAt.getHours(),
-        createdAt.getMinutes()
-    );
+    const formattedDateTime = createdAt.toLocaleString();
 
     return formattedDateTime;
 }

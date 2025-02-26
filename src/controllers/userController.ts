@@ -2,17 +2,18 @@ import { User, Thought } from '../models/index.js';
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 
-
+// get all Users
 export const getUsers = async (_req: Request, res: Response) => {
     try {
         const users = await User.find();
-        return res.json(users);
+        return res.status(200).json(users);
     } catch (err) {
         console.error(err);
         return res.status(500).json(err);
     }
 }
 
+// get a single User by id
 export const getSingleUser = async (req: Request, res: Response) => {
     try {
         if (!checkId(req.params.userId)) {
@@ -20,12 +21,14 @@ export const getSingleUser = async (req: Request, res: Response) => {
         }
 
         const user = await User.findOne({ _id: req.params.userId })
-            .select('-__v');
+            .select('-__v')
+            .populate('thoughts')
+            .populate('friends');
 
         if (!user) {
             return res.status(404).json({ message: 'No user with that ID.' });
         } else {
-            return res.json(user);
+            return res.status(200).json(user);
         }
     } catch (err) {
         console.error(err);
@@ -37,14 +40,14 @@ export const getSingleUser = async (req: Request, res: Response) => {
 export const createUser = async (req: Request, res: Response) => {
     try {
         const dbUserData = await User.create(req.body);
-        return res.json(dbUserData);
+        return res.status(200).json(dbUserData);
     } catch (err) {
         console.error(err);
         return res.status(500).json(err);
     }
 }
 
-// update user by id
+// update User by id
 export const updateUser = async (req: Request, res: Response) => {
     try {
         if(!checkId(req.params.userId)) {
@@ -60,7 +63,7 @@ export const updateUser = async (req: Request, res: Response) => {
         if (!user) {
             return res.status(404).json({ message: 'No user with that ID.' });
         } else {
-            return res.json(user);
+            return res.status(200).json(user);
         }
     } catch (err) {
         console.error(err);
@@ -90,7 +93,8 @@ export const deleteUser = async (req: Request, res: Response) => {
                 }
             }
         }
-        return res.status(200).json({ message: "User and thoughts sucessfully deleted!" });
+        console.log(`Deleted: ${user}`);
+        return res.status(200).json(user);
     } catch (err) {
         console.error(err);
         return res.status(500).json(err);
@@ -155,6 +159,7 @@ export const deleteFriend = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'No user with that ID.' });
         }
 
+        console.log(`Deleted: friend (${req.params.friendId}) from user (${req.params.userId})`)
         return res.status(200).json(user);
 
     } catch (err) {
