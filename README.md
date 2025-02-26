@@ -28,6 +28,7 @@ $ npm i
 ```
 - Seed the database:
 ```
+$ npm run build
 $ npm run seed
 ```
 
